@@ -1,0 +1,33 @@
+
+component TCPFileReader() filename -> resource, status {
+  """
+  Concatenate lines into a chunk of text (the requested resource)
+
+  Input:
+    filename : the resource to read
+  Outputs:
+    resource : contents of resource file
+    status : OK or File not found (404)
+  """
+
+  read_file : io.FileReader()(200)
+  exception_handler : exception.ExceptionHandler()
+  is_eos : std.Compare(op="=")
+
+  """
+  .filename > read_html.filename
+  read_html.out > exception_handler.token
+  exception_handler.token > concat.line
+  concat.text > .resource
+  exception_handler.status > is_eos.a
+  "End of stream" > is_eos.b
+  is_eos.result > status_mapper.select
+  OK > status_mapper.case_true
+  NOT_FOUND > status_mapper.case_false
+
+
+  """
+}
+
+
+
