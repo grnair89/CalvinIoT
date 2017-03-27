@@ -6,26 +6,3 @@
         "out":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-3"}]},"type":"+"}]
     }
 }
-
-
-
-csruntime --host 10.10.10.206 --port 5000 --controlport 5001 --name runtime-0 &
-csruntime --host 10.10.10.207 --port 5002 --controlport 5003 --name runtime-1 &
-csruntime --host 10.10.10.208 --port 5004 --controlport 5005 --name runtime-2 &
-csruntime --host 10.10.10.209 --port 5006 --controlport 5007 --name runtime-3 &
-
-
-
-csruntime --host localhost --port 5008 --controlport 5009 --name runtime-0 &
-csruntime --host localhost --port 5002 --controlport 5003 --name runtime-1 &
-csruntime --host localhost --port 5004 --controlport 5005 --name runtime-2 &
-csruntime --host localhost --port 5006 --controlport 5007 --name runtime-3 &
-
-
-
-
-cscontrol http://localhost:4001 deploy --reqs avgtest.deployjson avgtest.calvin
-
-cscontrol http://localhost:5009 deploy --reqs avgtest.deployjson avgtest.calvin
-
-cscontrol http://localhost:5009 applications delete c692255b-681b-4252-9be8-718cfe1170a5

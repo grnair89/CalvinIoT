@@ -20,11 +20,11 @@ out : io.Log(loglevel="INFO")
 sensor0.data > node1.temp_sensor
 sensor1.data > node1.temp_network
 sensor2.data > node2.temp_sensor
-node1.result > node2.temp_network
 sensor3.data > node3.temp_sensor
-node2.result > node3.temp_network
 sensor4.data > node4.temp_sensor
-node3.result > node4.temp_network
 
 #final result of all the node data flow
+node1.result > node3.temp_network
+node3.result > node2.temp_network
+node2.result > node4.temp_network
 node4.result > out.data

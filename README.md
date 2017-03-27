@@ -1,15 +1,21 @@
-# IoT Data processing FrameWork based on Actor Model and Flow Based programming
+# An IoT Data processing FrameWork based on Actor Model and Flow Based programming
 
 ## What is this?
 
-A data processing framework for IoT
+A data processing framework for IoT that uses light weighted actors and flow based programming concepts to communicate with each other.
+According to the changes in network flow, the routing flow between nodes are dynamically updated by parsing the input actor application graph.
 
 ## Getting Started
 
+1. Install Calvin files on all the nodes: https://github.com/EricssonResearch/calvin-base/tree/master/extras/install
+2. Copy project files to each calvin install locations
+3. execute $python director.py from a single node
+
 ## Contact
+Slack :
 
 ## Related
+Calvin constrained: https://github.com/EricssonResearch/calvin-constrained
 
 ## Open issues
-
-Many
+Fewer than before

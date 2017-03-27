@@ -29,11 +29,4 @@ class ComputeAverage(Actor):
         result = ExceptionToken("Division by 0")
         return ActionResult(production=(result,))
 
-    # @condition(action_input=[('temp_network', 1), ('temp_sensor', 1)], action_output=[('result', 1)])
-    # @guard(lambda self, n, s: (n + s) == 0)
-    # def divide_by_zero(self, temp_network, temp_sensor):
-    #     """Exceptional case: return exception token"""
-    #     result = ExceptionToken("Division by 0")
-    #     return ActionResult(production=(result,))
-
     action_priority = (divide_by_zero, divide)

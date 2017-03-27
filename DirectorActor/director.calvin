@@ -25,7 +25,6 @@ component TCPFileReader() filename -> resource, status {
   OK > status_mapper.case_true
   NOT_FOUND > status_mapper.case_false
 
-
   """
 }
 

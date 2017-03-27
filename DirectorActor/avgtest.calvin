@@ -1,0 +1,8 @@
+sensor_one : std.Constant(data=55)
+sensor_two : std.Constant(data=65)
+node_one : math.ComputeAverage()
+out : io.Log(loglevel="INFO")
+
+sensor_one.token > node_one.temp_sensor
+sensor_two.token > node_one.temp_network
+node_one.result = out.data
