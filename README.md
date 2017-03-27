@@ -1,4 +1,4 @@
-# An IoT Data processing FrameWork based on Actor Model and Flow Based programming
+# An IoT data processing frameWork based on actor model and flow based programming
 
 ## What is this?
 
