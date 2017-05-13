@@ -4,12 +4,21 @@ forms an applications graph across multiple runtimes
 */
 
 
-#Actors specs
-sensor0 : std.Trigger(tick = 2.0, data=55)
-sensor1 : std.Trigger(tick = 2.0, data=55)
-sensor2 : std.Trigger(tick = 2.0, data=60)
-sensor3 : std.Trigger(tick = 2.0, data=60)
-sensor4 : std.Trigger(tick = 2.0, data=65)
+#Actor specs
+
+rand0: math.Random(lower=30, upper=50)
+rand1: math.Random(lower=30, upper=50)
+rand2: math.Random(lower=30, upper=50)
+rand3: math.Random(lower=30, upper=50)
+rand4: math.Random(lower=30, upper=50)
+
+
+sensor0 : std.Trigger(tick = 2.0, data=null)
+sensor1 : std.Trigger(tick = 2.0, data=null)
+sensor2 : std.Trigger(tick = 2.0, data=null)
+sensor3 : std.Trigger(tick = 2.0, data=null)
+sensor4 : std.Trigger(tick = 2.0, data=null)
+
 node1 : math.ComputeAverage()
 node2 : math.ComputeAverage()
 node3 : math.ComputeAverage()
@@ -17,14 +26,28 @@ node4 : math.ComputeAverage()
 out : io.Log(loglevel="INFO")
 
 #Actor logical connections
-sensor0.data > node1.temp_sensor
-sensor1.data > node1.temp_network
-sensor2.data > node2.temp_sensor
+
+#Start Node
+sensor0.data > rand0.trigger
+sensor1.data > rand1.trigger
+rand0.integer > node1.temp_sensor
+rand1.integer > node1.temp_network
+
+
+sensor2.data > rand2.trigger
 node1.result > node2.temp_network
-sensor3.data > node3.temp_sensor
+rand2.integer > node2.temp_sensor
+
+
+sensor3.data > rand3.trigger
+rand3.integer > node3.temp_sensor
 node2.result > node3.temp_network
-sensor4.data > node4.temp_sensor
+
+
+sensor4.data > rand4.trigger
+rand4.integer > node4.temp_sensor
 node3.result > node4.temp_network
 
 #final result of all the node data flow
+# Result Destination Node
 node4.result > out.data

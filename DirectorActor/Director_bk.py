@@ -37,27 +37,27 @@ class Director(object):
     """
 
     def __init__(self):
-        self.actor_graph_current = {"node1": ["node2"],
-                                    "node2": ["node3"],
-                                    "node3": ["node4"]
-                                    }
-
-        self.actor_graph_new = {"node1": ["node3"],
+        self.test_graph_curr = {"node1": ["node2"],
+                                "node2": ["node3"],
                                 "node3": ["node4"]
                                 }
+
+        self.test_graph_new = {"node1": ["node3"],
+                               "node3": ["node4"]
+                               }
         self.start = "node1"
         self.destination = "node4"
 
-        self.RUNTIME_PORT = 6500
-        self.CONTROL_PORT = 6501
-        self.REST_PORT = 7505
-        self.CONTROL_URI = "http://127.0.0.1:"+str(self.CONTROL_PORT)+"/applications"
+        self.RUNTIME_PORT = 7000
+        self.CONTROL_PORT = 7001
+        self.REST_PORT = 7501
+        self.CONTROL_URI = "http://127.0.0.1:" + str(self.CONTROL_PORT)
 
         self.G = nx.DiGraph()
         self.G.add_edges_from([('node1', 'node2'), ('node2', 'node3'), ('node3', 'node4')], weight=1)
 
         self.H = nx.DiGraph()
-        # self.H.add_edges_from([('node1', 'node3'), ('node3', 'node4')], weight=1)
+        #self.H.add_edges_from([('node1', 'node3'), ('node3', 'node4')], weight=1)
 
         # sample post
         # curl -X POST -H "Content-Type: application/json" -d 'graph={"node1": ["node2"], "node2": ["node3"], "node3": ["node4"]}}' http://localhost:9450
@@ -70,10 +70,8 @@ class Director(object):
         if environ['REQUEST_METHOD'] == 'POST':
             request_body_size = int(environ.get('CONTENT_LENGTH', 0))
             request_body = environ['wsgi.input'].read(request_body_size)
-            # global test_graph_post
-            # global actor_graph_current
-            self.actor_graph_new = self.test_graph_post
-            self.test_graph_post = parse_qs(request_body)
+            global test_graph_post
+            test_graph_post = parse_qs(request_body)
 
             return 'From POST: %s' % ''.join('%s: %s' % (k, v) for k, v in test_graph_post.iteritems()) + "\n"
         else:  # GET
@@ -85,17 +83,17 @@ class Director(object):
         print "HTTP server started on port " + str(self.REST_PORT)
         httpd.serve_forever()
 
-    def read_new_config(self, actor_graph_new, destination):
+    def read_new_config(self, test_graph_new, destination):
         # read the calvin file
         with open('avgapp.calvin') as fp, open('avgapp_output.calvin', 'w') as foutp:
             for line in fp:
-                if ('>' in line and ".result" in line) or ('node2' in line) or ('sensor2' in line) or ('rand2' in line):
+                if '>' in line and ".result" in line:
                     # skip these mappings and add new from actor graph
                     continue
                 else:
                     foutp.write(line)
-            for vertex in actor_graph_new:
-                for neighbour in actor_graph_new[vertex]:
+            for vertex in test_graph_new:
+                for neighbour in test_graph_new[vertex]:
                     print (vertex, neighbour)
                     line = vertex + ".result > " + neighbour + ".temp_network\n"
                     foutp.write(line)
@@ -106,20 +104,13 @@ class Director(object):
     def kill_application(self):
         # os.system('ls')
         r = requests.get(self.CONTROL_URI)
-        # r.json()
-        # print r.content
+        r.json()
+        print r
         app_id = r.text
         curr_app_id = app_id.replace('["', '').replace('"]', '')
-
-        curr_app_id = curr_app_id.strip()
-
-        print "curr_app_id: "+str(curr_app_id)
-        app_kill_command = "cscontrol http://127.0.0.1:" + str(self.CONTROL_PORT) \
-                           + " applications delete " + str(curr_app_id)
-
-        kill_code = os.system(app_kill_command)
-        print "\napp_kill_command: "+app_kill_command
-        print "\nkill_code : "+str(kill_code)
+        app_kill_command = "cscontrol http://127.0.0.1:" + self.CONTROL_PORT \
+                           + " applications delete " + curr_app_id
+        kill_code = os.command(app_kill_command)
         if kill_code is 0:
             print "Application: " + curr_app_id + " has been stopped..."
         else:
@@ -129,100 +120,42 @@ class Director(object):
 
     def roll_back(self):
         # redeploy with the previous script
-        rollback_command_distributed = "cscontrol http://127.0.0.1:" + str(self.CONTROL_PORT) \
-                           + " deploy --reqs application.deployjson avgapp.calvin"
-
-        rollback_command = "cscontrol http://127.0.0.1:" + str(self.CONTROL_PORT) \
-                           + " deploy avgapp.calvin"
-
-        print "rollback_command : " + str(rollback_command)
+        rollback_command = "cscontrol http://127.0.0.1:" + self.CONTROL_PORT \
+                           + " deploy --reqs application.deployjson avgtemp.calvin"
         code = os.system(rollback_command)
         if code is 0:
             print "Rolled back to previous configuration..."
         else:
             print "Error during rollback!!"
 
-    def perform_config_check(self):
-        print "Performing config check ...\n"
-        result = self.is_isomorphic(self.G, self.H)
-        if not result:
-            print "Deploying received actor graph...\n"
-            print self.test_graph_post
-            self.deploy_new_actor_graph()
-        else:
-            print "No changes in actor graph...\n"
-            print "\nCurrently deployed Actor Graph: "
-            print self.actor_graph_current
-            print "\nReceived Actor Graph: "
-            print self.test_graph_post
-
-    def start_config_check_new(self):
-
+    def start_config_check(self):
         while True:
-            H_edge_list = []
             time.sleep(5)
-            print "\nNewly Received graph : "
-            print self.test_graph_post
-
-            print "\nCurrent graph"
-            print self.actor_graph_current
-
-            for key in self.test_graph_post.keys():
-                # test_graph_string = test_graph_post[i]
-                # test_graph_string.replace('["', '').replace('"]', '')
-                # print test_graph_post[i]
-                test_graph = self.test_graph_post[key]
-
-                for key in test_graph:
-
-                    first = key[1:len(key) - 2]
-                    # print first
-                    first = first.replace("{", "").replace("}", "").replace("\"", "").replace(" ", "").replace("[", "").replace("]", "")
-                    # print first
-
-                    second = first.split(",")
-
-                    for item in second:
-                        itemList = item.split(":")
-                        # print("\n"+itemList[0]+"-->"+itemList[1])
-
-                        edge = (itemList[0], itemList[1])
-
-                        # print edge
-
-                        H_edge_list.append(edge)
-
-            if H_edge_list:
-                self.H.clear()
-                self.H.add_edges_from(H_edge_list, None, weight=1)
-                self.perform_config_check()
-
-            print "\nReceived actor graph : "
-            print self.H.edges()
-
-            print "\nCurrent actor graph : "
-            print self.G.edges()
+            print "Performing config check ...\n"
+            result = self.is_isomorphic(self.G, self.H)
+            if not result:
+                print "Deploying received actor graph...\n"
+                print test_graph_post
+                self.deploy_new_actor_graph()
+            else:
+                print "No changes in actor graph...\n"
+                print "\nCurrently deployed Actor Graph: "
+                print self.test_graph_curr
+                print "\nReceived Actor Graph: "
+                print test_graph_post
 
     def is_isomorphic(self, g1, g2):
         return iso.is_isomorphic(g1, g2)  # no weights considered
 
+
     def deploy_new_actor_graph(self):
         # process the actor graph and destination node from received config
-
-        adj_list = nx.to_dict_of_lists(self.H, nodelist=None)
-        self.read_new_config(adj_list, self.destination)
-
-        # get the app hash and kill it
+        self.read_new_config(self.test_graph_new, self.destination)
         curr_app_id = self.kill_application()
 
         # redeploy app with new actor graph
-        dep_app_command_distributed = "cscontrol http://127.0.0.1:" + str(self.CONTROL_PORT) \
-                          + " deploy --reqs application_new.deployjson avgapp_output.calvin"
-
-        dep_app_command = "cscontrol http://127.0.0.1:" + str(self.CONTROL_PORT) \
-                                      + " deploy avgapp_output.calvin"
-
-        print "dep_app_command : " + str(dep_app_command)
+        dep_app_command = "cscontrol http://127.0.0.1:" + self.CONTROL_PORT \
+                          + " deploy --reqs application_new.deployjson avgtemp.calvin"
         code = os.system(dep_app_command)
         # print app_id
         if code is not 0:
@@ -230,11 +163,10 @@ class Director(object):
             self.roll_back()
         else:
             print("Successfully switched to new configuration...")
-            # Update current to newly deployed actor graph
-            self.G = self.H
-            self.actor_graph_current = adj_list
+
 
 if __name__ == "__main__":
+
     test_graph_post = {}
 
     D = Director()
@@ -243,4 +175,4 @@ if __name__ == "__main__":
     threading.Thread(target=D.start_web_server).start()
 
     # start the config checker
-    D.start_config_check_new()
+    D.start_config_check()

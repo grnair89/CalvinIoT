@@ -1,0 +1,51 @@
+/*
+This file specifies the ip->op mappings of the actors and
+forms an applications graph across multiple runtimes
+*/
+
+
+#Actors specs
+
+#sensor0 : std.Trigger(tick = 2.0, data=math.Random(0, 100))
+
+
+sensor0 : std.Trigger(tick = 2.0, data=5)
+out : io.Log(loglevel="INFO")
+shuffle : math.Random(lower=0, upper=100)
+shuffle.integer > out.data
+
+sensor0.data > shuffle.trigger
+
+
+
+/*random: math.Random(0, 100)
+sensor0 : std.Trigger(tick = 2.0, data="tick")
+sensor1 : std.Trigger(tick = 2.0, random)
+sensor2 : std.Trigger(tick = 2.0, random)
+sensor3 : std.Trigger(tick = 2.0, random)
+sensor4 : std.Trigger(tick = 2.0, random)
+
+node1 : math.ComputeAverage()
+node2 : math.ComputeAverage()
+node3 : math.ComputeAverage()
+node4 : math.ComputeAverage()
+node5 : math.DisplayAverage()
+
+out : io.Log(loglevel="INFO")
+
+#Actor logical connections
+sensor0.random > node1.temp_sensor
+sensor1.random > node1.temp_network
+sensor2.random > node2.temp_sensor
+node1.result > node2.temp_network
+sensor3.random > node3.temp_sensor
+node2.result > node3.temp_network
+sensor4.random > node4.temp_sensor
+node3.result > node4.temp_network
+sensor5.random > node4.temp_sensor
+node4.result > node4.temp_network
+
+#final result of all the node data flow
+node4.result > node5.input
+
+*/

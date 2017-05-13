@@ -1,0 +1,29 @@
+/*
+This file specifies the ip->op mappings of the actors and
+forms an applications graph across multiple runtimes
+*/
+
+
+#Actors specs
+sensor0 : std.Trigger(tick = 2.0, data=55)
+sensor1 : std.Trigger(tick = 2.0, data=55)
+sensor2 : std.Trigger(tick = 2.0, data=60)
+sensor3 : std.Trigger(tick = 2.0, data=60)
+sensor4 : std.Trigger(tick = 2.0, data=65)
+node1 : math.ComputeAverage()
+node2 : math.ComputeAverage()
+node3 : math.ComputeAverage()
+node4 : math.ComputeAverage()
+out : io.Log(loglevel="INFO")
+
+#Actor logical connections
+sensor0.data > node1.temp_sensor
+sensor1.data > node1.temp_network
+sensor2.data > node2.temp_sensor
+sensor3.data > node3.temp_sensor
+sensor4.data > node4.temp_sensor
+
+#final result of all the node data flow
+node1.result > node3.temp_network
+node3.result > node4.temp_network
+node4.result > out.data

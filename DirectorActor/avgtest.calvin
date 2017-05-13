@@ -1,8 +1,26 @@
-sensor_one : std.Constant(data=55)
-sensor_two : std.Constant(data=65)
-node_one : math.ComputeAverage()
+sensor0 : std.Trigger(tick = 2.0, data=null)
+rand: math.Random(lower=0, upper=100)
 out : io.Log(loglevel="INFO")
 
-sensor_one.token > node_one.temp_sensor
-sensor_two.token > node_one.temp_network
-node_one.result = out.data
+sensor0.data > rand.trigger
+rand.integer > out.data
+
+
+/*
+This file specifies the ip->op mappings of the actors and
+forms an applications graph across multiple runtimes
+*/
+#Actors specs
+sensor1 : std.Trigger(tick = 2.0, data=55)
+sensor2 : std.Trigger(tick = 2.0, data=60)
+node1 : math.ComputeAverage()
+node2 : math.DisplayResult()
+out : io.Log(loglevel="INFO")
+
+#Actor logical connections
+sensor1.data > node1.temp_sensor1
+sensor2.data > node1.temp_sensor2
+
+#final result of all the node data flow
+node1.out > node2.input
+node2.result > out.data

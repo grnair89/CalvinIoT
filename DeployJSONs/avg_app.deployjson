@@ -1,0 +1,18 @@
+{
+    "requirements": {
+        "rand0":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-206"}]},"type":"+"}],
+        "rand1":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-206"}]},"type":"+"}],
+        "sensor0":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-206"}]},"type":"+"}],
+        "sensor1":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-206"}]},"type":"+"}],
+        "node1":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-206"}]},"type":"+"}],
+        "rand2":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-207"}]},"type":"+"}],
+        "sensor2":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-207"}]},"type":"+"}],
+        "node2":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-207"}]},"type":"+"}],
+        "rand3":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-209"}]},"type":"+"}],
+        "sensor3":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-209"}]},"type":"+"}],
+        "node3":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-209"}]},"type":"+"}],
+        "rand4":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-210"}]},"type":"+"}],
+        "sensor4":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-210"}]},"type":"+"}],
+        "node4":[{"op":"node_attr_match","kwargs":{"index":["node_name",{"name":"runtime-210"}]},"type":"+"}],
+    }
+}

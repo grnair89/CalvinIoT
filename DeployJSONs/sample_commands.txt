@@ -1,20 +1,25 @@
-csruntime --host 10.10.10.206 --port 5000 --controlport 5001 --name runtime-0 &
-csruntime --host 10.10.10.207 --port 5002 --controlport 5003 --name runtime-1 &
-csruntime --host 10.10.10.208 --port 5004 --controlport 5005 --name runtime-2 &
-csruntime --host 10.10.10.209 --port 5006 --controlport 5007 --name runtime-3 &
+csruntime --host 10.10.10.208 --port 6500 --controlport 6501 --name runtime-0 &
+csruntime --host 10.10.10.209 --port 7500 --controlport 7501 --name runtime-1 &
+csruntime --host 10.10.10.210 --port 8500 --controlport 8501 --name runtime-2 &
+csruntime --host 10.10.10.211 --port 9500 --controlport 9501 --name runtime-3 &
 
 
 
-csruntime --host localhost --port 5008 --controlport 5009 --name runtime-0 &
-csruntime --host localhost --port 5002 --controlport 5003 --name runtime-1 &
-csruntime --host localhost --port 5004 --controlport 5005 --name runtime-2 &
-csruntime --host localhost --port 5006 --controlport 5007 --name runtime-3 &
+csruntime --host 127.0.0.1 --port 6500 --controlport 6501 --name runtime-0 &
+csruntime --host 127.0.0.1 --port 7500 --controlport 7501 --name runtime-1 &
+csruntime --host 127.0.0.1 --port 8500 --controlport 8501 --name runtime-2 &
+csruntime --host 127.0.0.1 --port 9500 --controlport 9501 --name runtime-3 &
 
 
 
 
-cscontrol http://localhost:4001 deploy --reqs avgtest.deployjson avgtest.calvin
+cscontrol http://10.10.10.208:6501 deploy --reqs avgapp.deployjson avgapp.calvin
 
 cscontrol http://localhost:5009 deploy --reqs avgtest.deployjson avgtest.calvin
 
-cscontrol http://localhost:5009 applications delete c692255b-681b-4252-9be8-718cfe1170a5
+cscontrol http://localhost:6501 applications delete ﻿59a598c9-f1ff-429e-931b-594f057fc3d9
+
+
+cscontrol http://localhost:6501 deploy avgapp.calvin
+
+curl -X POST -H "Content-Type: application/json" -d 'graph={"node1": ["node3"], "node3": ["node2"], "node3": ["node4"]}}' http://localhost:7505
