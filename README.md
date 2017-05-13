@@ -2,8 +2,8 @@
 
 ## What is this?
 
-A data processing framework for IoT that uses light weighted actors and flow based programming concepts to communicate with each other.
-According to the changes in network flow, the routing flow between nodes are dynamically updated by parsing the input actor application graph.
+A data processing framework for IoT that uses lightweighted actors and flow based programming concepts to communicate with each other.
+According to the changes in network flow, the controller updates the routing flow between nodes dynamically by parsing the input actor application graph.
 
 ## Getting Started
 
