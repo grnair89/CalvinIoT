@@ -1,4 +1,4 @@
-# An IoT data processing frameWork based on actor model and flow based programming
+# An IoT data processing frameWork based on Calvin with a flow update controller
 
 ## What is this?
 
