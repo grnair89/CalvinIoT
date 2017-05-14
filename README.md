@@ -1,4 +1,4 @@
-# An IoT data processing frameWork based on Calvin with a flow update controller
+# An IoT data processing frameWork based on Calvin
 
 ## What is this?
 
