@@ -13,7 +13,7 @@ According to the changes in network flow, the controller updates the routing flo
 3. execute $python Director.py from a single node with active csruntime
 
 ## Contact
-Slack :
+Open an issue here.
 
 ## Related
 Calvin constrained: https://github.com/EricssonResearch/calvin-constrained
